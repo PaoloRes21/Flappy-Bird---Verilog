@@ -1,2 +1,17 @@
 # Flappy-Bird---Verilog
 Flappy Bird created using Verilog on the Nexys A7 Board
+
+Programmed using Xilinx Vivado 2024
+Plug in a VGA Monitor and play.
+
+Add clock wizard and set to 106.47MHz.
+
+Then add all the COE Files to run by using block memory block.
+The images and COE files are all attached, the names of the COE Files are listed in the code already.
+
+Usage:
+Start: press BTN0 to begin the game
+Flap: press BTN0 again to flap the bird upward
+Difficulty: set SW[0..2] before start for levels 0–3 (faster pipes)
+Reset: after game‑over, press BTN0 to restart
+Unlock Hat: move the board quickly (accelerometer) to make a crown appear
