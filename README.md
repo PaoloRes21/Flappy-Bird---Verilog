@@ -9,6 +9,8 @@ Add clock wizard and set to 106.47MHz.
 Then add all the COE Files to run by using block memory block.
 The images and COE files are all attached, the names of the COE Files are listed in the code already.
 
+Copy and Paste all the Code into Vivado to Play
+
 Usage:
 Start: press BTN0 to begin the game
 Flap: press BTN0 again to flap the bird upward
