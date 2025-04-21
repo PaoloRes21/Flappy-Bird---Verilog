@@ -1,0 +1,85 @@
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Module Name: score_display
+// Description: Displays "Hi" (high score) and "Sc" (current score) on a
+//              Nexys A7 8-digit 7-segment display in the format:
+//              AN7 AN6 AN5 AN4 AN3 AN2 AN1 AN0
+//               H   -   5   6   S   -   1   7
+//////////////////////////////////////////////////////////////////////////////////
+
+module score_display(
+    input clk,
+    input rst,
+    input [7:0] score,         // Score value (max 99)
+    input [7:0] high_score,    // High score value (max 99)
+    output reg [6:0] seg,      // Segment outputs (a-g)
+    output reg [7:0] an        // Anode signals for 8-digit 7-segment display
+);
+
+    // Clock divider to cycle through digits
+    reg [18:0] clkdiv;
+    always @(posedge clk or negedge rst) begin
+        if (!rst)
+            clkdiv <= 0;
+        else
+            clkdiv <= clkdiv + 1;
+    end
+
+    wire [2:0] sel = clkdiv[18:16];
+
+    reg [3:0] digit_val;
+
+    // Select digit to display
+    always @(*) begin
+        case (sel)
+            3'd0: begin // AN0: score ones
+                digit_val = score % 10;
+                an = 8'b11111110;
+            end
+            3'd1: begin // AN1: score tens
+                digit_val = score / 10;
+                an = 8'b11111101;
+            end
+            3'd3: begin // AN3: 'S'
+                digit_val = 4'd12;
+                an = 8'b11110111;
+            end
+            3'd4: begin // AN4: high_score ones
+                digit_val = high_score % 10;
+                an = 8'b11101111;
+            end
+            3'd5: begin // AN5: high_score tens
+                digit_val = high_score / 10;
+                an = 8'b11011111;
+            end
+            3'd7: begin // AN7: 'H'
+                digit_val = 4'd10;
+                an = 8'b01111111;
+            end
+            default: begin
+                digit_val = 4'd0;
+                an = 8'b11111111;
+            end
+        endcase
+    end
+
+    // 7-segment decoder (common cathode; active low)
+    always @(*) begin
+        case (digit_val)
+            4'd0:  seg = 7'b1000000; // 0
+            4'd1:  seg = 7'b1111001; // 1
+            4'd2:  seg = 7'b0100100; // 2
+            4'd3:  seg = 7'b0110000; // 3
+            4'd4:  seg = 7'b0011001; // 4
+            4'd5:  seg = 7'b0010010; // 5
+            4'd6:  seg = 7'b0000010; // 6
+            4'd7:  seg = 7'b1111000; // 7
+            4'd8:  seg = 7'b0000000; // 8
+            4'd9:  seg = 7'b0010000; // 9
+            4'd10: seg = 7'b0001001; // H
+            4'd12: seg = 7'b0010010; // S
+            default: seg = 7'b1111111; // blank
+        endcase
+    end
+
+endmodule
